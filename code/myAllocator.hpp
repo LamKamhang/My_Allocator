@@ -6,6 +6,8 @@
  * -------------------------------------------
  * 模板类Allocator的接口声明，以及模板函数实现
  */
+#pragma once
+#include "memory_pool.h"
 
 namespace JJ{
     
@@ -21,28 +23,64 @@ public:
     typedef     const value_type&   const_reference;
     typedef     size_t              size_type;
     typedef     ptrdiff_t           difference_type;
-    typedef     true_type           propagate_on_container_move_assignment;
-    typedef     true_type           is_always_equal;
+
+
 
     // constructor and destructor
-    myAllocator() _NOEXCEPT = default;
-    myAllocator(const allocator&) _NOEXCEPT = default;
+    myAllocator() = default;
+    myAllocator(const myAllocator&) = default;
 
 	template<class _Other>
-    myAllocator(const allocator<_Other>&) _NOEXCEPT
+    myAllocator(const myAllocator<_Other>&)
     {	// construct from a related allocator (do nothing)
     }
-    ~myAllocator() _NOEXCEPT = default;
+    ~myAllocator() = default;
 
+    inline pointer         address(reference _Val)         const     { return &_Val; }
+    inline const_pointer   address(const_reference _Val)   const     { return &_Val; }
 
-    pointer         address(reference _Val)         const _NOEXCEPT     { return &_Val; }
-    const_pointer   address(const_reference _Val)   const _NOEXCEPT     { return &_Val; }
-    void            deallocate(pointer _Ptr, size_type _Count);
-    _DECLSPEC_ALLOCATOR pointer allocate(size_type _Count);
-    template<class _Uty> void destroy(_Uty *_Ptr);
-    template<class _Objty,
-            class... _Types>
-    void            construct(_Objty *_Ptr, _Types&&... _Args);
+    inline void     deallocate(pointer _Ptr, size_type _Count)
+    {
+        size_type size = sizeof(value_type) * _Count;
+        if (size > TYPE_SIZE_THRESHOLD)
+        {
+            free(_Ptr);
+        }
+        else
+        {
+            mp.deallocate(_Ptr, size);
+        }
+    }
+    
+    inline pointer allocate(size_type _Count)
+    {
+        size_type size = sizeof(value_type) * _Count;
+        if (size > TYPE_SIZE_THRESHOLD)
+        {
+            return (pointer)malloc(size);
+        }
+        else
+        {
+            return (pointer)mp.allocate(size);
+        }
+    }
+
+    template<class _Uty> 
+    inline void destroy(_Uty *_Ptr)
+    {
+        _Ptr->~value_type();
+    }
+
+    template<class _Objty, class _Types>
+    inline void construct(_Objty *_Ptr, _Types& _Arg)
+    {
+        new (_Ptr) _Objty(_Arg);
+    }
+
+private:
+    memory_pool mp;
 };
 
 }
+
+

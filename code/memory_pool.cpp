@@ -1,10 +1,15 @@
 #include "memory_pool.h"
+
+using namespace JJ;
+
+
+memory_pool::memory_pool()
 {
     //
     for(int i = 0 ; i < SIZE_OF_FREE_LISTS; i++)
         pool[i] = enlarge( (i+1) * BLOCK_STEP);
 }
-void* NAME::memory_pool::allocate(size_type n)
+void* memory_pool::allocate(size_t n)
 {
     int order = n / BLOCK_STEP;
     free_list_node *empty = pool[order];
@@ -18,7 +23,7 @@ void* NAME::memory_pool::allocate(size_type n)
     delete empty;
     return result;
 }
-bool NAME::memory_pool::deallocate(void* p, size_type n)
+void memory_pool::deallocate(void* p, size_t n)
 {
     auto temp = new free_list_node;
     temp->block = p;
@@ -26,13 +31,13 @@ bool NAME::memory_pool::deallocate(void* p, size_type n)
     temp->next = pool[order];
     pool[order] = temp;
 }
-int NAME::memory_pool::floor(size_type n)
+size_t memory_pool::floor(size_t n)
 {
     return n / BLOCK_STEP + 1;
 }
-NAME::free_list_node* NAME::memory_pool::enlarge(size_type n)
+free_list_node* memory_pool::enlarge(size_t n)
 {
-    NAME::free_list_node* prev, *p, *head;
+    free_list_node* prev, *p, *head;
     head = nullptr;
     for(int i = 0; i < NUMBER_OF_BLOCKS_PER_STEP ; i ++)
     {   

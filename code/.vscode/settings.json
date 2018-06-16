@@ -5,6 +5,10 @@
         "xmemory0": "cpp",
         "xstring": "cpp",
         "xutility": "cpp",
-        "xtr1common": "cpp"
+        "xtr1common": "cpp",
+        "limits": "cpp",
+        "initializer_list": "cpp",
+        "type_traits": "cpp",
+        "tuple": "cpp"
     }
 }
