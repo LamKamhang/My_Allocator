@@ -1,6 +1,6 @@
 #include "memory_pool.h"
-NAME::memory_pool::memory_pool()
 {
+    //
     for(int i = 0 ; i < SIZE_OF_FREE_LISTS; i++)
         pool[i] = enlarge( (i+1) * BLOCK_STEP);
 }
