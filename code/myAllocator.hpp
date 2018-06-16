@@ -8,7 +8,7 @@
  */
 #pragma once
 #include "memory_pool.h"
-
+JJ::memory_pool mp;
 namespace JJ{
     
 template <typename _Ty>
@@ -76,9 +76,6 @@ public:
     {
         new (_Ptr) _Objty(_Arg);
     }
-
-private:
-    memory_pool mp;
 };
 
 }

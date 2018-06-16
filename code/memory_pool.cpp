@@ -7,7 +7,7 @@ memory_pool::memory_pool()
 {
     //
     for(int i = 0 ; i < SIZE_OF_FREE_LISTS; i++)
-        pool[i] = enlarge( (i+1) * BLOCK_STEP);
+        pool[i] = enlarge((i + 1) * BLOCK_STEP);
 }
 void* memory_pool::allocate(size_t n)
 {
@@ -39,13 +39,15 @@ free_list_node* memory_pool::enlarge(size_t n)
 {
     free_list_node* prev, *p, *head;
     head = nullptr;
+	prev = nullptr;
     for(int i = 0; i < NUMBER_OF_BLOCKS_PER_STEP ; i ++)
     {   
         p = new free_list_node;
         p->block = (void*)malloc(sizeof(unsigned char)*n);
         p->next = nullptr;
         if(head == nullptr) head = p;
-        prev->next = p;
+        if(prev == nullptr) head->next = p;
+		else prev->next = p;
         prev = p;
     }
     return head;

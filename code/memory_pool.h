@@ -10,7 +10,6 @@ namespace JJ
 
     struct free_list_node
     {
-    public:
         void* block;
         free_list_node* next;
     };
@@ -18,11 +17,11 @@ namespace JJ
     class memory_pool
     {
     public:
-        static free_list_node* pool [SIZE_OF_FREE_LISTS];
         memory_pool();
         void* allocate(size_t n);
         void deallocate(void* p, size_t n);
     private:
+		free_list_node* pool[SIZE_OF_FREE_LISTS];
         size_t floor(size_t n);
         free_list_node* enlarge(size_t n);
     };
