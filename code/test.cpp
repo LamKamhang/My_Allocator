@@ -1,9 +1,8 @@
-#pragma once
-#include "util.h"
+#include "Header/util.h"
 #include <memory>
 #include <vector>
 #include <iostream>
-#include "myAllocator.hpp"
+#include "Header/myAllocator.hpp"
 
 using namespace std;
 using namespace JJ;
@@ -16,16 +15,16 @@ int main(int argc, char const *argv[])
     
 	for (int i = 0; i < times; ++i)
 	{
+        int index = i% 32;
 		timer();
-		vector<int, myAllocator<int> > v1(50);
+		vector<int, myAllocator<int> > v1(index);
 		t += timer();
 		timer();
-		vector<int> v2(50);
+		vector<int> v2(index);
 		t2 += timer();
 	}
     cout << times << ": " << t << "s" << endl;
 	cout << times << ": " << t2 << "s" << endl;
-	char p;
-	cin >> p;
+
     return 0;
 }

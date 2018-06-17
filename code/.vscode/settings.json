@@ -9,6 +9,7 @@
         "limits": "cpp",
         "initializer_list": "cpp",
         "type_traits": "cpp",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "exception": "cpp"
     }
 }
