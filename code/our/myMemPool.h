@@ -5,18 +5,18 @@
 * Created Date: Sat Jun 16 10:41:14 DST 2018(dong)
 * Modified Date: Sun Jun 17 09:32:21 DST 2018(kk)
 * -------------------------------------------
-* ÄÚ´æ³ØµÄÉùÃ÷
-* version 1.0: ÊµÏÖÄÚ´æ³ØµÄ»ù±¾²Ù×÷£¬Ê¹ÓÃÔ¤ÏÈÉêÇëÄÚ´æ½øĞĞÄÚ´æ·ÖÅä(dong)
-* version 1.1: ¸ÄÔìfree_list_nodeµÄÀàĞÍ£¬Ê¹ÓÃÁªºÏ¼õÉÙÄÚ´æÏûºÄ(kk)
+* å†…å­˜æ± çš„å£°æ˜
+* version 1.0: å®ç°å†…å­˜æ± çš„åŸºæœ¬æ“ä½œï¼Œä½¿ç”¨é¢„å…ˆç”³è¯·å†…å­˜è¿›è¡Œå†…å­˜åˆ†é…(dong)
+* version 1.1: æ”¹é€ free_list_nodeçš„ç±»å‹ï¼Œä½¿ç”¨è”åˆå‡å°‘å†…å­˜æ¶ˆè€—(kk)
 */
 #pragma once
 #include <cstdlib>
 
 namespace JJ
 {
-	#define BLOCK_STEP 8
-	#define SIZE_OF_FREE_LISTS 16
-	#define TYPE_SIZE_THRESHOLD SIZE_OF_FREE_LISTS*BLOCK_STEP
+	#define BLOCK_STEP 4
+	#define SIZE_OF_FREE_LISTS 128
+	#define TYPE_SIZE_THRESHOLD (SIZE_OF_FREE_LISTS*BLOCK_STEP)
 	#define NUMBER_OF_BLOCKS_PER_STEP 20
 
 	class MyMemPool
@@ -28,7 +28,7 @@ namespace JJ
 		 * Created Date: Sat Jun 16 10:41:14 DST 2018(dong)
 		 * Modified Date: Sun Jun 17 09:32:21 DST 2018(kk)
 		 * ---------------------------------------------
-		 * ¹¹Ôìº¯ÊıÔÚ¹¹ÔìµÄÊ±ºò, Í¬Ê±ÉêÇëÄÚ´æ£¬µÃµ½³õÊ¼ÄÚ´æ³Ø
+		 * æ„é€ å‡½æ•°åœ¨æ„é€ çš„æ—¶å€™, åŒæ—¶ç”³è¯·å†…å­˜ï¼Œå¾—åˆ°åˆå§‹å†…å­˜æ± 
 		 */
 		MyMemPool();
 		/*
@@ -37,68 +37,65 @@ namespace JJ
 		 * Created Date: Sat Jun 16 10:41:14 DST 2018(dong)
 		 * Modified Date: Sun Jun 17 09:32:21 DST 2018(kk)
 		 * ---------------------------------------------
-		 * Îö¹¹º¯Êı£¬ÔÚÎö¹¹µÄÊ±ºò×Ô¶¯Ïú»ÙÊÍ·ÅÄÚ´æ³ØµÄĞÅÏ¢
+		 * ææ„å‡½æ•°ï¼Œåœ¨ææ„çš„æ—¶å€™è‡ªåŠ¨é”€æ¯é‡Šæ”¾å†…å­˜æ± çš„ä¿¡æ¯
 		 */
 		~MyMemPool();
 
 		/*
 		 * Function: allocate
-		 * Argument: n(size_t) ĞèÒªÉêÇëµÄÄÚ´æ´óĞ¡
-		 * Return: pointer(void *) ·µ»Øvoid*Ö¸Õë, Ö¸ÏòÉêÇëÄÚ´æµÄÊ×µØÖ·
+		 * Argument: n(size_t) éœ€è¦ç”³è¯·çš„å†…å­˜å¤§å°
+		 * Return: pointer(void *) è¿”å›void*æŒ‡é’ˆ, æŒ‡å‘ç”³è¯·å†…å­˜çš„é¦–åœ°å€
 		 * Usage: pointer = (value_type*)allocate(n);
 		 * Created Date: Sat Jun 16 10:41:14 DST 2018(dong)
 		 * Modified Date: Sun Jun 17 09:32:21 DST 2018(kk)
 		 * ---------------------------------------------
-		 * Ê×ÏÈÔÚÄÚ´æ³ØÖĞÑ°ÕÒÊÇ·ñÓĞ¿ÉÓÃ¿é£¬ÓĞÔòÖ±½ÓÀàĞÍ×ª»»·µ»Ø£¬
-		 * Ã»ÓĞÏàÓ¦µÄ¿éÔòÈ¥ÉêÇëÏàÓ¦µÄÄÚ´æ¿Õ¼ä¡£
+		 * é¦–å…ˆåœ¨å†…å­˜æ± ä¸­å¯»æ‰¾æ˜¯å¦æœ‰å¯ç”¨å—ï¼Œæœ‰åˆ™ç›´æ¥ç±»å‹è½¬æ¢è¿”å›ï¼Œ
+		 * æ²¡æœ‰ç›¸åº”çš„å—åˆ™å»ç”³è¯·ç›¸åº”çš„å†…å­˜ç©ºé—´ã€‚
 		 */
 		void* allocate(size_t n);
 
 		/*
 		 * Function: deallocate
-		 * Argument: p(void*) ĞèÒªÊÍ·ÅµÄÄÚ´æÊ×µØÖ·, µ«Ò»¶¨ÊÇÒ»¿ªÊ¼ÉêÇëÊ±·µ»ØµÄÄÇ¸öµØÖ·
-					 n(size_t) Õâ¸öÖ¸ÕëÖ¸ÏòµÄÄÚ´æ¿éÉêÇëµÄ´óĞ¡
-		 * Return: Ã»ÓĞ·µ»ØÖµ, Ò²¿ÉÒÔºóÆÚ¸Ä³Ébool·µ»ØÖµ
+		 * Argument: p(void*) éœ€è¦é‡Šæ”¾çš„å†…å­˜é¦–åœ°å€, ä½†ä¸€å®šæ˜¯ä¸€å¼€å§‹ç”³è¯·æ—¶è¿”å›çš„é‚£ä¸ªåœ°å€
+					 n(size_t) è¿™ä¸ªæŒ‡é’ˆæŒ‡å‘çš„å†…å­˜å—ç”³è¯·çš„å¤§å°
+		 * Return: æ²¡æœ‰è¿”å›å€¼, ä¹Ÿå¯ä»¥åæœŸæ”¹æˆboolè¿”å›å€¼
 		 * Usage: deallocate(p, n);
 		 * Created Date: Sat Jun 16 10:41:14 DST 2018(dong)
 		 * Modified Date: Sun Jun 17 09:32:21 DST 2018(kk)
 		 * ---------------------------------------------
-		 * ²ÉÓÃlazyÉ¾³ıµÄ·½Ê½, ½«ÊÍ·ÅµÄÄÚ´æÖ±½ÓÆ´½Óµ½ÄÚ´æ³ØÖĞ¡£
+		 * é‡‡ç”¨lazyåˆ é™¤çš„æ–¹å¼, å°†é‡Šæ”¾çš„å†…å­˜ç›´æ¥æ‹¼æ¥åˆ°å†…å­˜æ± ä¸­ã€‚
 		 */
 		void deallocate(void* p, size_t n);
 	private:
 		union free_list_node {
-			void* block;
 			free_list_node * next;
 		};
 		free_list_node * pool[SIZE_OF_FREE_LISTS];
 
 		/*
 		 * Function: _round
-		 * Argument: n(size_t) ĞèÒªÉêÇëµÄÄÚ´æ´óĞ¡
-		 * Return: _round(size_t) ±ê×¼»¯ÏòÉÏÈ¡ÕûÄÚ´æ´óĞ¡
+		 * Argument: n(size_t) éœ€è¦ç”³è¯·çš„å†…å­˜å¤§å°
+		 * Return: _round(size_t) æ ‡å‡†åŒ–å‘ä¸Šå–æ•´å†…å­˜å¤§å°
 		 * Usage: size_t normalize_n = _round(n);
 		 * Create Date: Sun Jun 17 09:32:21 DST 2018(kk)
 		 * ---------------------------------------------
-		 * ÒòÎªÄÚ´æ³ØÖĞµÄ¿é´óĞ¡ÊÇÓĞ¼ä¸ô£¬8ByteÎªµ¥Î»,(BLOCK_STEP)
-		 * Õâ¸öº¯ÊıµÄ¹¦ÄÜÊÇ½«·Ç±ê×¼µÄ´óĞ¡roundµ½±ê×¼´óĞ¡ÖĞ£¬
-		 * ÏòÉÏÈ¡Õû¡£
+		 * å› ä¸ºå†…å­˜æ± ä¸­çš„å—å¤§å°æ˜¯æœ‰é—´éš”ï¼Œ8Byteä¸ºå•ä½,(BLOCK_STEP)
+		 * è¿™ä¸ªå‡½æ•°çš„åŠŸèƒ½æ˜¯å°†éæ ‡å‡†çš„å¤§å°roundåˆ°æ ‡å‡†å¤§å°ä¸­ï¼Œ
+		 * å‘ä¸Šå–æ•´ã€‚
 		 */
 		size_t _round(size_t n);
 
 		/*
 		 * Function: _enlarge
-		 * Argument: n(size_t) ±ê×¼ÄÚ´æ´óĞ¡(8µÄ±¶Êı, µ¥Î»ÎªByte)
-		 * Return: pointer(free_list_node*), ·µ»ØÊ×µØÖ·
+		 * Argument: n(size_t) æ ‡å‡†å†…å­˜å¤§å°(8çš„å€æ•°, å•ä½ä¸ºByte)
+		 * Return: pointer(free_list_node*), è¿”å›é¦–åœ°å€
 		 * Usage: free_list_node * ptr = _enlarge(_round(n)*BLOCK_STEP);
 		 * Created Date: Sat Jun 16 10:41:14 DST 2018(dong)
 		 * Modified Date: Sun Jun 17 09:32:21 DST 2018(kk)
 		 * ---------------------
-		 * Êµ¼ÊÈ¥ÉêÇëÄÚ´æµÄº¯Êı£¬Ò»´ÎĞÔÉêÇë20¿é×÷ÎªÁ´±í·µ»Ø
-		 * ÎªÁË·½±ã²Ù×÷, Á´±íÊ¹ÓÃÁËÍ·²åÈëµÄ·½Ê½
+		 * å®é™…å»ç”³è¯·å†…å­˜çš„å‡½æ•°ï¼Œä¸€æ¬¡æ€§ç”³è¯·20å—ä½œä¸ºé“¾è¡¨è¿”å›
+		 * ä¸ºäº†æ–¹ä¾¿æ“ä½œ, é“¾è¡¨ä½¿ç”¨äº†å¤´æ’å…¥çš„æ–¹å¼
 		 */
 		free_list_node* _enlarge(size_t n);
 	};
 }
-
-extern JJ::MyMemPool mp;

@@ -6,9 +6,9 @@
 * Created Date: Sat Jun 16 10:41:14 DST 2018(dong)
 * Modified Date: Sun Jun 17 09:32:21 DST 2018(kk)
 * -------------------------------------------
-* ÄÚ´æ³ØµÄÊµÏÖ
-* version 1.0: ÊµÏÖÄÚ´æ³ØµÄ»ù±¾²Ù×÷£¬Ê¹ÓÃÔ¤ÏÈÉêÇëÄÚ´æ½øĞĞÄÚ´æ·ÖÅä(dong)
-* version 1.1: ¸ÄÔìfree_list_nodeµÄÀàĞÍ£¬Ê¹ÓÃÁªºÏ¼õÉÙÄÚ´æÏûºÄ(kk)
+* å†…å­˜æ± çš„å®ç°
+* version 1.0: å®ç°å†…å­˜æ± çš„åŸºæœ¬æ“ä½œï¼Œä½¿ç”¨é¢„å…ˆç”³è¯·å†…å­˜è¿›è¡Œå†…å­˜åˆ†é…(dong)
+* version 1.1: æ”¹é€ free_list_nodeçš„ç±»å‹ï¼Œä½¿ç”¨è”åˆå‡å°‘å†…å­˜æ¶ˆè€—(kk)
 */
 #include "Header/myMemPool.h"
 
@@ -18,6 +18,7 @@ MyMemPool::MyMemPool()
 {
 	for (int i = 0; i < SIZE_OF_FREE_LISTS; ++i)
 		pool[i] = _enlarge((i + 1) * BLOCK_STEP);
+		//pool[i] = nullptr;
 }
 /*
 * Function: ~MyMemPool
@@ -25,7 +26,7 @@ MyMemPool::MyMemPool()
 * Created Date: Sat Jun 16 10:41:14 DST 2018(dong)
 * Modified Date: Sun Jun 17 09:32:21 DST 2018(kk)
 * ---------------------------------------------
-* Îö¹¹º¯Êı£¬ÔÚÎö¹¹µÄÊ±ºò×Ô¶¯Ïú»ÙÊÍ·ÅÄÚ´æ³ØµÄĞÅÏ¢
+* ææ„å‡½æ•°ï¼Œåœ¨ææ„çš„æ—¶å€™è‡ªåŠ¨é”€æ¯é‡Šæ”¾å†…å­˜æ± çš„ä¿¡æ¯
 */
 MyMemPool::~MyMemPool()
 {
@@ -44,27 +45,27 @@ MyMemPool::~MyMemPool()
 
 void* MyMemPool::allocate(size_t n)
 {
-	// ÕÒµ½¶ÔÓ¦µÄÁ´
+	// æ‰¾åˆ°å¯¹åº”çš„é“¾
 	size_t order = n / BLOCK_STEP;
 
-	// È«²¿±»Õ¼ÓÃÁË
+	// å…¨éƒ¨è¢«å ç”¨äº†
 	if (pool[order] == nullptr)
 	{
-		// ÖØĞÂÉêÇëÒ»´ó¿éÄÚ´æ
+		// é‡æ–°ç”³è¯·ä¸€å¤§å—å†…å­˜
 		pool[order] = _enlarge(_round(n));
 	}
 
-	// Ã»ÓĞ¿¼ÂÇÉêÇëÄÚ´æÊ§°ÜµÄÒì³£Çé¿ö
+	// æ²¡æœ‰è€ƒè™‘ç”³è¯·å†…å­˜å¤±è´¥çš„å¼‚å¸¸æƒ…å†µ
 	free_list_node* _slot = pool[order];
 	pool[order] = _slot->next;
 	return (void *)_slot;
 }
 void MyMemPool::deallocate(void* p, size_t n)
 {
-	// Èç¹ûp²»ÊÇnullptr
+	// å¦‚æœpä¸æ˜¯nullptr
 	if (p != nullptr)
 	{
-		// orderÊÇ¶ÔÓ¦µÄÁ´ÏÂ±ê, ÒÔÍ·²åÈëµÄ·½Ê½²åÈë
+		// orderæ˜¯å¯¹åº”çš„é“¾ä¸‹æ ‡, ä»¥å¤´æ’å…¥çš„æ–¹å¼æ’å…¥
 		size_t order = n / BLOCK_STEP;
 		((free_list_node *)p)->next = pool[order];
 		pool[order] = (free_list_node*)p;
@@ -73,18 +74,18 @@ void MyMemPool::deallocate(void* p, size_t n)
 
 /*
 * Function: _round
-* Argument: n(size_t) ĞèÒªÉêÇëµÄÄÚ´æ´óĞ¡
-* Return: _round(size_t) ±ê×¼»¯ÏòÉÏÈ¡ÕûÄÚ´æ´óĞ¡
+* Argument: n(size_t) éœ€è¦ç”³è¯·çš„å†…å­˜å¤§å°
+* Return: _round(size_t) æ ‡å‡†åŒ–å‘ä¸Šå–æ•´å†…å­˜å¤§å°
 * Usage: size_t normalize_n = _round(n);
 * Create Date: Sun Jun 17 09:32:21 DST 2018(kk)
 * ---------------------------------------------
-* ÒòÎªÄÚ´æ³ØÖĞµÄ¿é´óĞ¡ÊÇÓĞ¼ä¸ô£¬8ByteÎªµ¥Î»,(BLOCK_STEP)
-* Õâ¸öº¯ÊıµÄ¹¦ÄÜÊÇ½«·Ç±ê×¼µÄ´óĞ¡roundµ½±ê×¼´óĞ¡ÖĞ£¬
-* ÏòÉÏÈ¡Õû¡£
+* å› ä¸ºå†…å­˜æ± ä¸­çš„å—å¤§å°æ˜¯æœ‰é—´éš”ï¼Œ8Byteä¸ºå•ä½,(BLOCK_STEP)
+* è¿™ä¸ªå‡½æ•°çš„åŠŸèƒ½æ˜¯å°†éæ ‡å‡†çš„å¤§å°roundåˆ°æ ‡å‡†å¤§å°ä¸­ï¼Œ
+* å‘ä¸Šå–æ•´ã€‚
 */
 size_t MyMemPool::_round(size_t n)
 {
-	/*_roundÏòÉÏÈ¡Õû,
+	/*_roundå‘ä¸Šå–æ•´,
 		example: BLOCK_STEP = 8
 			n		round
 			1		((1-1)/8 + 1) * 8 = 8
@@ -97,14 +98,14 @@ size_t MyMemPool::_round(size_t n)
 
 /*
 * Function: _enlarge
-* Argument: n(size_t) ±ê×¼ÄÚ´æ´óĞ¡(8µÄ±¶Êı, µ¥Î»ÎªByte)
-* Return: pointer(free_list_node*), ·µ»ØÊ×µØÖ·
+* Argument: n(size_t) æ ‡å‡†å†…å­˜å¤§å°(8çš„å€æ•°, å•ä½ä¸ºByte)
+* Return: pointer(free_list_node*), è¿”å›é¦–åœ°å€
 * Usage: free_list_node * ptr = _enlarge(_round(n)*BLOCK_STEP);
 * Created Date: Sat Jun 16 10:41:14 DST 2018(dong)
 * Modified Date: Sun Jun 17 09:32:21 DST 2018(kk)
-* ---------------------
-* Êµ¼ÊÈ¥ÉêÇëÄÚ´æµÄº¯Êı£¬Ò»´ÎĞÔÉêÇë20¿é×÷ÎªÁ´±í·µ»Ø
-* ÎªÁË·½±ã²Ù×÷, Á´±íÊ¹ÓÃÁËÍ·²åÈëµÄ·½Ê½
+* -----------------------------------------------
+* å®é™…å»ç”³è¯·å†…å­˜çš„å‡½æ•°ï¼Œä¸€æ¬¡æ€§ç”³è¯·20å—ä½œä¸ºé“¾è¡¨è¿”å›
+* ä¸ºäº†æ–¹ä¾¿æ“ä½œ, é“¾è¡¨ä½¿ç”¨äº†å¤´æ’å…¥çš„æ–¹å¼
 */
 MyMemPool::free_list_node* MyMemPool::_enlarge(size_t n)
 {
@@ -113,12 +114,10 @@ MyMemPool::free_list_node* MyMemPool::_enlarge(size_t n)
 
 	for (int i = 0; i < NUMBER_OF_BLOCKS_PER_STEP; ++i)
 	{
-		ptr = (free_list_node *)malloc(n * sizeof(char));
+		ptr = (free_list_node *)malloc(n);
 		ptr->next = head;
 		head = ptr;
 	}
 
 	return head;
 }
-
-JJ::MyMemPool mp;

@@ -8,7 +8,7 @@
  */
 #pragma once
 #include <utility>
-#include "MyMemPool.h"
+//#include "MyMemPool.h"
 
 namespace JJ{
     
@@ -55,11 +55,15 @@ public:
         inline void construct(_Objty *_Ptr, _Types&&... _Args);
 
     // destory
-    void destroy(pointer _Ptr);
+		inline void destroy(pointer _Ptr);
 
     // get max_size
-    size_type max_size() const noexcept;   
+    size_type max_size() const noexcept;  
+// private:
+//     static MyMemPool mp;
 };
+
+// template <typename _Ty> MyMemPool MyAllocator<_Ty>::mp;
 
 // constructors and destructors
 template <typename _Ty>
@@ -91,25 +95,25 @@ template <typename _Ty>
     if (_Count == 0)
         return nullptr;
     auto size = sizeof(value_type) * _Count;
-    return  size > TYPE_SIZE_THRESHOLD ? 
-                (pointer)malloc(size)   :
-                (pointer)mp.allocate(size);
-	// return (pointer)malloc(size);
+    // return  size > TYPE_SIZE_THRESHOLD ? 
+    //             (pointer)malloc(size)   :
+    //             (pointer)mp.allocate(size);
+	return (pointer)malloc(size);
 }
 
 // deallocate
 template <typename _Ty>
     inline void MyAllocator<_Ty>::deallocate(pointer _Ptr, size_type _Count)
 {
-    size_type size = sizeof(value_type) * _Count;
-    if (size > TYPE_SIZE_THRESHOLD)
-    {
+    // size_type size = sizeof(value_type) * _Count;
+    // if (size > TYPE_SIZE_THRESHOLD)
+    // {
         free(_Ptr);
-    }
-    else
-    {
-        mp.deallocate(_Ptr, size);
-    }
+    // }
+    // else
+    // {
+    //     mp.deallocate(_Ptr, size);
+    // }
 }
 
 template <typename _Ty> 
@@ -131,7 +135,6 @@ template <typename _Ty>
 {
   return size_type(~0) / sizeof(_Ty);
 }
-
 
 }
 

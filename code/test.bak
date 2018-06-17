@@ -12,16 +12,17 @@ int main(int argc, char const *argv[])
     int times = 150000;
     double t = 0;
 	double t2 = 0;
+	double temp;
     
 	for (int i = 0; i < times; ++i)
 	{
-        int index = i% 32;
-		timer();
-		vector<int, myAllocator<int> > v1(index);
-		t += timer();
-		timer();
+        int index = i% 32 * 100;
+		temp = timer();
+		vector<int, MyAllocator<int> > v1(index);
+		t += timer() - temp;
+		temp = timer();
 		vector<int> v2(index);
-		t2 += timer();
+		t2 += timer() - temp;
 	}
     cout << times << ": " << t << "s" << endl;
 	cout << times << ": " << t2 << "s" << endl;

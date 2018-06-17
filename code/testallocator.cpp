@@ -1,4 +1,4 @@
-// testallocator.cpp : �������̨Ӧ�ó������ڵ㡣
+// testallocator.cpp : 锟斤拷锟斤拷锟斤拷锟教ㄓ︼拷贸锟斤拷锟斤拷锟斤拷诘恪�
 //
 
 #include <chrono>
@@ -6,13 +6,33 @@
 #include <random>
 #include <vector>
 
-#include "myallocator.hpp"
-using namespace JJ;
-//#include "y_alloc.h"
-//template<class T>
-//using MyAllocator = std::allocator<T>;
-//using MyAllocator = y_alloc<T>;
-//using MyAllocator = y_mp_alloc<T>;
+#ifdef VERA
+  #include "v1/myallocator.h"
+#endif
+
+#ifdef VERB
+  #include "v2/y_alloc.h"
+  template<class T>
+  using MyAllocator = y_alloc<T>;
+#endif
+
+#ifdef VERC
+  #include "v2/y_alloc.h"
+  template<class T>
+  using MyAllocator = y_mp_alloc<T>;
+#endif
+
+#ifdef VERD
+  #include <memory>
+  template<class T>
+  using MyAllocator = std::allocator<T>;
+#endif
+
+#ifdef VERE
+	#include "our/myAllocator.hpp"
+	using namespace JJ;
+#endif
+
 using Point2D = std::pair<int, int>;
 
 const int TestSize = 10000;
