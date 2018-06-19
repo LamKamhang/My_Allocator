@@ -14,8 +14,10 @@
 
 namespace JJ
 {
-	#define BLOCK_STEP 4
-	#define SIZE_OF_FREE_LISTS 128
+	#define BLOCK_STEP 8
+	#define SIZE_OF_FREE_LISTS 16
+	#define BLOCK_WIDTH SIZE_OF_FREE_LISTS
+	#define BLOCK_DEPTH 1000
 	#define TYPE_SIZE_THRESHOLD (SIZE_OF_FREE_LISTS*BLOCK_STEP)
 	#define NUMBER_OF_BLOCKS_PER_STEP 20
 
@@ -70,8 +72,9 @@ namespace JJ
 		union free_list_node {
 			free_list_node * next;
 		};
-		free_list_node * pool[SIZE_OF_FREE_LISTS];
-
+		free_list_node * ListPool[SIZE_OF_FREE_LISTS];
+		void* BlockPool[BLOCK_WIDTH];
+		int BlockCount[BLOCK_WIDTH];
 		/*
 		 * Function: _round
 		 * Argument: n(size_t) 需要申请的内存大小
@@ -96,6 +99,6 @@ namespace JJ
 		 * 实际去申请内存的函数，一次性申请20块作为链表返回
 		 * 为了方便操作, 链表使用了头插入的方式
 		 */
-		free_list_node* _enlarge(size_t n);
+		inline void* _enlarge(size_t n);
 	};
 }

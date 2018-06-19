@@ -10,15 +10,14 @@
 * version 1.0: 实现内存池的基本操作，使用预先申请内存进行内存分配(dong)
 * version 1.1: 改造free_list_node的类型，使用联合减少内存消耗(kk)
 */
-#include "Header/myMemPool.h"
+#include "myMemPool.h"
 
 using namespace JJ;
 
 MyMemPool::MyMemPool()
 {
 	for (int i = 0; i < SIZE_OF_FREE_LISTS; ++i)
-		pool[i] = _enlarge((i + 1) * BLOCK_STEP);
-		//pool[i] = nullptr;
+		BlockPool[i] = _enlarge(i);
 }
 /*
 * Function: ~MyMemPool
@@ -30,45 +29,53 @@ MyMemPool::MyMemPool()
 */
 MyMemPool::~MyMemPool()
 {
-	free_list_node* free_ptr;
-	for (int i = 0; i < SIZE_OF_FREE_LISTS; ++i)
-	{
-		free_list_node* ptr = pool[i];
-		while (ptr != nullptr)
+	free_list_node* temp;
+	for(int i = 0; i < BLOCK_WIDTH; i++)
+		free(BlockPool[i]);
+	for(int i = 0; i < SIZE_OF_FREE_LISTS; i++)
+		while(ListPool[i] != nullptr)
 		{
-			free_ptr = ptr;
-			ptr = ptr->next;
-			free(free_ptr);
+			temp = ListPool[i];
+			ListPool[i] = ListPool[i]->next;
+			free(temp);
 		}
-	}
 }
 
 void* MyMemPool::allocate(size_t n)
 {
 	// 找到对应的链
 	size_t order = n / BLOCK_STEP;
-
-	// 全部被占用了
-	if (pool[order] == nullptr)
+	void* result;
+	// 如果散链没有内存
+	if (ListPool[order] == nullptr)
 	{
-		// 重新申请一大块内存
-		pool[order] = _enlarge(_round(n));
+		// 看看有没有老本
+		// 如果没有老本，申请老本
+		if(BlockCount[order] == BLOCK_DEPTH)
+		{
+			BlockPool[order] = _enlarge(order);
+			BlockCount[order] = 0;
+		}
+		result = BlockPool[order];
+		BlockPool[order] = (char*)BlockPool + BLOCK_STEP*(order + 1);
+		BlockCount[order] ++;
 	}
-
-	// 没有考虑申请内存失败的异常情况
-	free_list_node* _slot = pool[order];
-	pool[order] = _slot->next;
-	return (void *)_slot;
+	// 若散链可用，返回散链
+	result = (void*)ListPool[order];
+	ListPool[order] = ListPool[order]->next;
+	return result;
 }
 void MyMemPool::deallocate(void* p, size_t n)
 {
+	size_t order = n / BLOCK_STEP;
+	free_list_node* temp;
 	// 如果p不是nullptr
 	if (p != nullptr)
 	{
-		// order是对应的链下标, 以头插入的方式插入
-		size_t order = n / BLOCK_STEP;
-		((free_list_node *)p)->next = pool[order];
-		pool[order] = (free_list_node*)p;
+		// 丢给散链
+		temp = (free_list_node*)p;
+		p = ListPool[order];
+		ListPool[order] = temp;
 	}
 }
 
@@ -107,17 +114,7 @@ size_t MyMemPool::_round(size_t n)
 * 实际去申请内存的函数，一次性申请20块作为链表返回
 * 为了方便操作, 链表使用了头插入的方式
 */
-MyMemPool::free_list_node* MyMemPool::_enlarge(size_t n)
+inline void* MyMemPool::_enlarge(size_t n)
 {
-	free_list_node *ptr, *head;
-	head = ptr = nullptr;
-
-	for (int i = 0; i < NUMBER_OF_BLOCKS_PER_STEP; ++i)
-	{
-		ptr = (free_list_node *)malloc(n);
-		ptr->next = head;
-		head = ptr;
-	}
-
-	return head;
+	return (void*)malloc(sizeof(char)*BLOCK_STEP*(n+1)*BLOCK_DEPTH);
 }
