@@ -29,21 +29,21 @@ public:
     typedef std::true_type          propagate_on_container_move_assignment;
     typedef std::true_type          propagate_on_container_swap;
 
-    // constructors and destructors
-    MyAllocator() noexcept;
-    MyAllocator(const MyAllocator& myAllocator) noexcept;
-    MyAllocator(MyAllocator&& myAllocator) noexcept;
-    template <class U>
-        MyAllocator(const MyAllocator<U>& myAllocator) noexcept;
-    ~MyAllocator() noexcept;
+    // // constructors and destructors
+    // MyAllocator() noexcept;
+    // MyAllocator(const MyAllocator& myAllocator) noexcept;
+    // MyAllocator(MyAllocator&& myAllocator) noexcept;
+    // template <class U>
+    //     MyAllocator(const MyAllocator<U>& myAllocator) noexcept;
+    // ~MyAllocator() noexcept;
 
-    // operator= overload
-    MyAllocator& operator=(const MyAllocator& myAllocator) = delete;
-    MyAllocator& operator=(MyAllocator&& myAllocator) noexcept;
+    // // operator= overload
+    // MyAllocator& operator=(const MyAllocator& myAllocator) = delete;
+    // MyAllocator& operator=(MyAllocator&& myAllocator) noexcept;
 
-    // get address
-    inline pointer         address(reference _Val)         const noexcept    { return &_Val; }
-    inline const_pointer   address(const_reference _Val)   const noexcept    { return &_Val; }
+    // // get address
+    // inline pointer         address(reference _Val)         const noexcept    { return &_Val; }
+    // inline const_pointer   address(const_reference _Val)   const noexcept    { return &_Val; }
 
     // allocate
     inline pointer allocate(size_type _Count = 1);
@@ -51,43 +51,43 @@ public:
     // deallocate
     inline void deallocate(pointer _Ptr, size_type _Count = 1);
 
-    // construct
-    template <class _Objty, class... _Types>
-        inline void construct(_Objty *_Ptr, _Types&&... _Args);
+    // // construct
+    // template <class _Objty, class... _Types>
+    //     inline void construct(_Objty *_Ptr, _Types&&... _Args);
 
-    // destory
-		inline void destroy(pointer _Ptr);
+    // // destory
+	// 	inline void destroy(pointer _Ptr);
 
-    // get max_size
-    size_type max_size() const noexcept;  
+    // // get max_size
+    // size_type max_size() const noexcept;  
 private:
     static MyMemPool mp;
 };
 template <typename T> MyMemPool MyAllocator<T>::mp;
 // template <typename _Ty> MyMemPool MyAllocator<_Ty>::mp;
 
-// constructors and destructors
-template <typename _Ty>
-    MyAllocator<_Ty>::MyAllocator() noexcept
-    {}
-template <typename _Ty>
-    MyAllocator<_Ty>::MyAllocator(const MyAllocator& myAllocator) noexcept
-    {}
-template <typename _Ty>
-    MyAllocator<_Ty>::MyAllocator(MyAllocator&& myAllocator) noexcept
-    {}
-template <typename _Ty>
-template <typename U>
-    MyAllocator<_Ty>::MyAllocator(const MyAllocator<U>& myAllocator) noexcept
-    {}
-template <typename _Ty>
-    MyAllocator<_Ty>::~MyAllocator() noexcept
-    {}
+// // constructors and destructors
+// template <typename _Ty>
+//     MyAllocator<_Ty>::MyAllocator() noexcept
+//     {}
+// template <typename _Ty>
+//     MyAllocator<_Ty>::MyAllocator(const MyAllocator& myAllocator) noexcept
+//     {}
+// template <typename _Ty>
+//     MyAllocator<_Ty>::MyAllocator(MyAllocator&& myAllocator) noexcept
+//     {}
+// template <typename _Ty>
+// template <typename U>
+//     MyAllocator<_Ty>::MyAllocator(const MyAllocator<U>& myAllocator) noexcept
+//     {}
+// template <typename _Ty>
+//     MyAllocator<_Ty>::~MyAllocator() noexcept
+//     {}
 
-// operator= overload
-template <typename _Ty>
-    MyAllocator<_Ty>& MyAllocator<_Ty>::operator=(MyAllocator&& myAllocator) noexcept
-    {}
+// // operator= overload
+// template <typename _Ty>
+//     MyAllocator<_Ty>& MyAllocator<_Ty>::operator=(MyAllocator&& myAllocator) noexcept
+//     {}
 
 // allocate
 template <typename _Ty>
@@ -123,26 +123,25 @@ template <typename _Ty>
     mp.deallocate((void *)_Ptr, size);
 }
 
-template <typename _Ty> 
-    inline void MyAllocator<_Ty>::destroy(_Ty *_Ptr)
-{
-    _Ptr->~value_type();
-}
+// template <typename _Ty> 
+//     inline void MyAllocator<_Ty>::destroy(_Ty *_Ptr)
+// {
+//     _Ptr->~value_type();
+// }
 
-template <typename _Ty>
-template <class _Objty, class... _Types>
-    inline void MyAllocator<_Ty>::construct(_Objty *_Ptr, _Types&&... _Args)
-{
-    new (_Ptr) _Objty(std::forward<_Types>(_Args)...);
-    //new (_Ptr)  _Objty(_Args);
-}
+// template <typename _Ty>
+// template <class _Objty, class... _Types>
+//     inline void MyAllocator<_Ty>::construct(_Objty *_Ptr, _Types&&... _Args)
+// {
+//     new (_Ptr) _Objty(std::forward<_Types>(_Args)...);
+//     //new (_Ptr)  _Objty(_Args);
+// }
 
-template <typename _Ty>
-    inline typename MyAllocator<_Ty>::size_type MyAllocator<_Ty>::max_size() const noexcept
-{
-  return size_type(~0) / sizeof(_Ty);
-}
+// template <typename _Ty>
+//     inline typename MyAllocator<_Ty>::size_type MyAllocator<_Ty>::max_size() const noexcept
+// {
+//   return size_type(~0) / sizeof(_Ty);
+// }
 
 }
-
 

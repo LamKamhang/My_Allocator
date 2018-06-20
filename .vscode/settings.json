@@ -4,7 +4,14 @@
         "xmemory0": "cpp",
         "xutility": "cpp",
         "xtr1common": "cpp",
-        "initializer_list": "cpp"
+        "initializer_list": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "vector": "cpp",
+        "xstring": "cpp",
+        "xtree": "cpp",
+        "iterator": "cpp",
+        "streambuf": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "C_Cpp.dimInactiveRegions": false
