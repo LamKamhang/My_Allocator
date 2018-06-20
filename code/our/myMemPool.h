@@ -86,7 +86,7 @@ namespace JJ
 		 * 这个函数的功能是将非标准的大小round到标准大小中，
 		 * 向上取整。
 		 */
-		size_t _round(size_t n);
+		inline size_t _round(size_t n);
 
 		/*
 		 * Function: _enlarge

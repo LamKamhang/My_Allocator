@@ -90,7 +90,7 @@ void MyMemPool::deallocate(void* p, size_t n)
 * 这个函数的功能是将非标准的大小round到标准大小中，
 * 向上取整。
 */
-size_t MyMemPool::_round(size_t n)
+inline size_t MyMemPool::_round(size_t n)
 {
 	/*_round向上取整,
 		example: BLOCK_STEP = 8
