@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project(MyAllocator)
 set(CMAKE_CXX_STANTARD 11)
 
+add_compile_options(-O3)
+
 option(A "test channel xww1" OFF)
 option(B "test channel xww2" OFF)
 option(C "test channel xww3" OFF)
