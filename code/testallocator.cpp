@@ -1,10 +1,11 @@
-// testallocator.cpp : 閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏁欍創锔兼嫹璐搁敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹璇樻仾锟�
+// testallocator.cpp : �������̨Ӧ�ó������ڵ㡣
 //
 
 #include <chrono>
 #include <iostream>
 #include <random>
 #include <vector>
+#include <limits>
 
 #ifdef VERA
   #include "v1/myallocator.h"
@@ -29,13 +30,16 @@
 #endif
 
 #ifdef VERE
-	#include "our/myAllocator.hpp"
-	using namespace JJ;
+  #include "our/myAllocator.hpp"
+  using namespace JJ;
 #endif
 
+  
 using Point2D = std::pair<int, int>;
 
 const int TestSize = 10000;
+const int smallSize = 1000;
+const int largeSize = TestSize;
 const int PickSize = 1000;
 
 int main()
@@ -44,24 +48,30 @@ int main()
 
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(1, TestSize);
+  std::uniform_int_distribution<> smalldis(1, smallSize);
+  std::uniform_int_distribution<> largedis(1, largeSize);
 
   // vector creation
   using IntVec = std::vector<int, MyAllocator<int>>;
   std::vector<IntVec, MyAllocator<IntVec>> vecints(TestSize);
-  for (int i = 0; i < TestSize; i++)
-    vecints[i].resize(dis(gen));
+  int smallVecs = TestSize * 0.85;
+  for (int i = 0; i < smallVecs; i++)
+    vecints[i].resize(smalldis(gen));
 
+  //test large size memory allocation
+  for (int i = smallVecs; i < TestSize; i++)
+	  vecints[i].resize(largedis(gen));
+  
   using PointVec = std::vector<Point2D, MyAllocator<Point2D>>;
   std::vector<PointVec, MyAllocator<PointVec>> vecpts(TestSize);
   for (int i = 0; i < TestSize; i++)
-    vecpts[i].resize(dis(gen));
+    vecpts[i].resize(smalldis(gen));
 
   // vector resize
   for (int i = 0; i < PickSize; i++)
   {
-    int idx = dis(gen) - 1;
-    int size = dis(gen);
+    int idx = smalldis(gen) - 1;
+    int size = smalldis(gen);
     vecints[idx].resize(size);
     vecpts[idx].resize(size);
   }
@@ -69,7 +79,7 @@ int main()
   // vector element assignment
   {
     int val = 10;
-    int idx1 = dis(gen) - 1;
+    int idx1 = largedis(gen) - 1;
     int idx2 = vecints[idx1].size() / 2;
     vecints[idx1][idx2] = val;
     if (vecints[idx1][idx2] == val)
@@ -79,7 +89,7 @@ int main()
   }
   {
     Point2D val(11, 15);
-    int idx1 = dis(gen) - 1;
+    int idx1 = largedis(gen) - 1;
     int idx2 = vecpts[idx1].size() / 2;
     vecpts[idx1][idx2] = val;
     if (vecpts[idx1][idx2] == val)
