@@ -11,7 +11,7 @@
 */
 #pragma once
 #include <cstdlib>
-
+#include <iostream>
 namespace JJ
 {
 	#define BLOCK_STEP 8

@@ -15,17 +15,37 @@
 
 namespace JJ
 {
-    #define BLOCK_STEP 1
+    #define BLOCK_STEP 16
 
     class MyMemPool
     {
     public:
+        // first, malloc a big pool for further use.
         MyMemPool():i(0){pool = (int *)malloc(sizeof(int)*0xfffffff);};
         ~MyMemPool(){};
+
+        // when want to allocate, just give the origin part and divide it.
         void* allocate(size_t n)
         {
             size_t order = _round(n);
-            if (i + order < 0xfffffff)
+            // if (free_list.find(order) != free_list.end() && free_list[order] != nullptr)
+            // {
+            //     free_list_node *node = free_list[order];
+            //     free_list[order] = node->next;
+            //     return (void *)node;
+            // }
+            // else if (i + order < 0xfffffff)
+            // {
+            //     size_t index = i;
+            //     i = i + order/sizeof(int);
+            //     return (void *)(pool + index);
+            // }
+            // else
+            // {
+            //     return (void *)malloc(n);
+            // }
+
+             if (i + order < 0xfffffff)
             {
                 size_t index = i;
                 i = i + order/sizeof(int);
@@ -42,6 +62,8 @@ namespace JJ
                 return (void *)malloc(n);
             }
         }
+
+        // deallocate, just give it into the free_list.
         void deallocate(void* p, size_t n)
         {
             size_t order = _round(n);

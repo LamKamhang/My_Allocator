@@ -8,6 +8,7 @@ option(A "test channel xww1" OFF)
 option(B "test channel xww2" OFF)
 option(C "test channel xww3" OFF)
 option(D "test channel stl" OFF)
+option(E "test our" OFF)
 
 
 file(GLOB source_files ${PROJECT_SOURCE_DIR}/code/*.cpp)
@@ -23,7 +24,7 @@ elseif (${C})
 elseif (${D})
     add_definitions(-DVERD)
 else ()
-    add_definitions(-DVERE)
+	add_definitions(-DVERE)
 endif ()
 
 add_executable(MyAllocator

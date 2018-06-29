@@ -63,8 +63,7 @@ public:
 private:
     static MyMemPool mp;
 };
-template <typename T> MyMemPool MyAllocator<T>::mp;
-// template <typename _Ty> MyMemPool MyAllocator<_Ty>::mp;
+template <typename _Ty> MyMemPool MyAllocator<_Ty>::mp;
 
 // // constructors and destructors
 // template <typename _Ty>
@@ -93,13 +92,6 @@ template <typename T> MyMemPool MyAllocator<T>::mp;
 template <typename _Ty>
     inline typename MyAllocator<_Ty>::pointer MyAllocator<_Ty>::allocate(size_type _Count)
 {
-    // if (_Count == 0)
-    //     return nullptr;
-    // auto size = sizeof(value_type) * _Count;
-    // // return  size > TYPE_SIZE_THRESHOLD ? 
-    // //             (pointer)malloc(size)   :
-    // //             (pointer)mp.allocate(size);
-	// return (pointer)malloc(size);
     if (_Count == 0)
         return nullptr;
     auto size = sizeof(value_type) * _Count;
@@ -110,15 +102,6 @@ template <typename _Ty>
 template <typename _Ty>
     inline void MyAllocator<_Ty>::deallocate(pointer _Ptr, size_type _Count)
 {
-    // // size_type size = sizeof(value_type) * _Count;
-    // // if (size > TYPE_SIZE_THRESHOLD)
-    // // {
-    //     free(_Ptr);
-    // // }
-    // // else
-    // // {
-    // //     mp.deallocate(_Ptr, size);
-    // // }
     auto size = sizeof(value_type) * _Count;
     mp.deallocate((void *)_Ptr, size);
 }
