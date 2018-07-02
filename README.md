@@ -20,7 +20,12 @@
 │       └── y_alloc.h
 ├── doc
 │   └── RESULT.txt
+├── exe
+│   ├── cal_mean_time.exe
+│   └── MyAllocator.exe
+├── oop_project.pdf
 ├── README.md
+├── calculate_mean_time.cpp
 ├── run_our.ps1
 ├── run_stl.ps1
 ├── run_v1.ps1
@@ -31,7 +36,11 @@
 - 所有的代码都包含在code文件夹下，包括老师之前所发工程里的三种allocator以及我们组实现的allocator。其分别在相应的文件夹下。
 - 测试结果则均在doc文件夹下，都存放在RESULT.txt内。`----`区分不同的测试结果。开头的值为这若干次测试的平均值。
 - 根目录下的`run_*.ps1`则是方便运行的脚本，但需要先安装`cmake`工具才可以使用。
-- 根目录下的`test.ps1`则是测试100次的脚本，将输出结果存放在doc/RESULT.txt中。
+- 根目录下的`test.ps1`则是测试100次的脚本，将输出结果存放在指定目录下的`RESULT.txt`中。
+- 根目录下的`calculate_mean_time.cpp`文件是供计算测试出来的文件进行计算平均值的。
+- exe下有一个编译好的`cal_mean_time.exe`文件，放在`test.ps1`测试出来的`RESULT.txt`中运行即可计算这100次测试中的平均时间，**但是由于编码问题，需要将测试文件`RESULT.txt`手动转译为ASCII编码，并去掉最后一行。**
+- oop_project.pdf则是我们的报告。
+- 这次新的提交则是修改了test.ps1的交互过程，使得更人性化，以及修改了newPool.hpp中析构没有free的严重的bug。
 
 #### OOP大作业要求
 

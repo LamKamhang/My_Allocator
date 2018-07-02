@@ -102,3 +102,8 @@ namespace JJ
 		inline void* _enlarge(size_t n);
 	};
 }
+
+union free_list_node {
+		void* block;
+		free_list_node * next;
+	};
